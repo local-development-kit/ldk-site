@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Web Services - Run AWS CDK Apps Locally</title>
+  <meta name="description" content="Local Web Services reads your AWS CDK cloud assembly and recreates your application locally. Build, test, and debug cloud-native AWS apps without deploying — no credentials, no cost, no waiting.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="#" class="nav-logo">Local Web Services</a>
+      <ul class="nav-links">
+        <li><a href="#what">What</a></li>
+        <li><a href="#why">Why</a></li>
+        <li><a href="#how-it-works">How</a></li>
+        <li><a href="#getting-started">Get Started</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#cli">CLI</a></li>
+        <li><a href="https://github.com/local-web-services/local-web-services" class="nav-github">GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <h1>Local Web Services</h1>
+      <p class="hero-subtitle">Run your AWS CDK applications locally with ldk dev.<br>
+Interact with local services using lws.<br>
+No credentials. No cost. No waiting.</p>
+      <div class="hero-actions">
+        <a href="#getting-started" class="btn btn-primary">Get Started</a>
+        <a href="https://github.com/local-web-services/local-web-services" class="btn btn-secondary">View on GitHub</a>
+      </div>
+      <div class="hero-install">
+        <code>uvx local-web-services ldk dev</code>
+      </div>
+    </div>
+  </header>
+
+  <section class="section" id="what">
+    <div class="container">
+      <h2>What is Local Web Services?</h2>
+      <p class="section-lead">Local Web Services is an open-source tool that reads your AWS CDK cloud assembly and recreates your entire application locally. Two complementary CLI tools work together: <code>ldk</code> runs your infrastructure, and <code>lws</code> lets you interact with it.</p>
+
+      <div class="feature-grid" style="grid-template-columns: 1fr 1fr; max-width: 900px; margin: 0 auto 64px;">
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>ldk</h3>
+          <p>The development server. Parses your CDK application and spins up local providers for every AWS service you use — DynamoDB, Lambda, S3, SQS, and more. Your entire stack runs locally.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔧</div>
+          <h3>lws</h3>
+          <p>AWS CLI for local services. Interact with your running local stack using familiar AWS SDK commands. Inspect tables, send messages, upload objects — all without touching AWS.</p>
+        </div>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">$0</div>
+          <h3>Zero Cost</h3>
+          <p>No AWS resources consumed during development. Your entire stack runs on your laptop.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&empty;</div>
+          <h3>Zero Credentials</h3>
+          <p>No AWS access keys required. No risk of credential leaks or accidental production changes.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&Delta;</div>
+          <h3>Zero Code Changes</h3>
+          <p>Standard AWS SDK calls work transparently. Your code runs identically locally and in production.</p>
+        </div>
+      </div>
+
+      <h3 style="font-size: 1.75rem; text-align: center; margin-top: 64px; margin-bottom: 32px; color: var(--color-text);">Developer Experience</h3>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <h3>Hot Reloading</h3>
+          <p>Change your Lambda handlers and see the results instantly. File watchers detect changes and reload automatically — no restart needed.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Web Dashboard</h3>
+          <p>Real-time web UI showing all resources, API routes, logs, and system status. Browse to <code>http://localhost:3000/_ldk/gui</code> to see everything at a glance.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>Structured Logging</h3>
+          <p>All Lambda invocations, API requests, and service calls logged in real-time. Stream logs directly in your terminal or via WebSocket to the dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="why">
+    <div class="container">
+      <h2>Why Use Local Web Services?</h2>
+      <p class="section-lead">Building with AWS CDK traditionally means deploying to the cloud just to test your code. Every change triggers a deploy-wait-test cycle that kills your flow and racks up costs.</p>
+
+      <div class="comparison">
+        <div class="comparison-col comparison-before">
+          <h3>Without Local Web Services</h3>
+          <ul>
+            <li>Edit code</li>
+            <li>Run <code>cdk deploy</code> — wait minutes</li>
+            <li>Test against live AWS resources</li>
+            <li>Check CloudWatch logs for errors</li>
+            <li>Pay for every invocation and resource</li>
+            <li>Manage AWS credentials on every machine</li>
+            <li>Hope you don't break a shared environment</li>
+          </ul>
+        </div>
+        <div class="comparison-col comparison-after">
+          <h3>With Local Web Services</h3>
+          <ul>
+            <li>Edit code</li>
+            <li>Run <code>uvx local-web-services ldk dev</code> — ready in seconds</li>
+            <li>Edit code — hot reload picks up changes instantly</li>
+            <li>Test against local services</li>
+            <li>Use lws commands to inspect data</li>
+            <li>See logs directly in your terminal</li>
+            <li>Pay nothing</li>
+            <li>No credentials needed</li>
+            <li>Your own isolated environment</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="font-size: 2rem; text-align: center; margin-top: 80px; margin-bottom: 48px; color: var(--color-text);">Shift Left: Inner Loop Development</h3>
+      <p style="text-align: center; color: var(--color-text-secondary); margin: -32px auto 48px; max-width: 800px; font-size: 1.0625rem;">Post-deployment testing is slow and expensive. Local Web Services moves testing into the inner loop — before deployment — enabling rapid iteration for developers and AI agents alike.</p>
+
+      <div class="goals-grid">
+        <div class="goal-card">
+          <h3>Instant Feedback</h3>
+          <p>Edit your code and see the results immediately. Hot reloading picks up changes automatically — no restart, no redeploy, no waiting. The fastest feedback loop for cloud-native development.</p>
+        </div>
+        <div class="goal-card">
+          <h3>AI Agent Ready</h3>
+          <p>AI code editors need fast feedback loops to verify changes. Local Web Services eliminates deployment wait time, enabling AI agents to iterate and validate rapidly without AWS costs.</p>
+        </div>
+        <div class="goal-card">
+          <h3>Production Parity</h3>
+          <p>Your local environment mirrors your AWS architecture. The same services, the same APIs, the same integration patterns — so local testing actually predicts production behavior.</p>
+        </div>
+        <div class="goal-card">
+          <h3>Zero AWS Dependency</h3>
+          <p>Develop on a plane, in a coffee shop, or in a locked-down network. No AWS account needed, no credentials to manage, no risk of accidental production changes.</p>
+        </div>
+        <div class="goal-card">
+          <h3>Complete Observability</h3>
+          <p>Built-in web dashboard and structured logging show all invocations, events, and state changes. Debug with full transparency in real-time instead of hunting through CloudWatch.</p>
+        </div>
+        <div class="goal-card">
+          <h3>CI/CD Testing</h3>
+          <p>Run your full integration test suite in CI without provisioning real AWS resources. Fast, cheap, and reliable automated testing for your cloud-native apps.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <h2>How It Works</h2>
+      <p class="section-lead">Local Web Services parses the output of <code>cdk synth</code>, builds a dependency graph of your infrastructure, and starts local providers for each AWS service — in the right order.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Parse</h3>
+            <p>The <code>ldk</code> tool reads your <code>cdk.out/</code> cloud assembly — the CloudFormation templates, construct tree, and asset paths that <code>cdk synth</code> produces.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Graph</h3>
+            <p>It builds a directed graph of your resources and their relationships: which Lambda is triggered by which API route, which function writes to which table, and what depends on what.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Start</h3>
+            <p>Local providers spin up in topological order — tables and queues first, then compute, then API gateways. Each service gets its own HTTP endpoint that speaks the AWS API.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3>Redirect</h3>
+            <p>The local runtime sets <code>AWS_ENDPOINT_URL_*</code> environment variables so the standard AWS SDK in your Lambda handlers automatically talks to the local services. No code changes needed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="getting-started">
+    <div class="container">
+      <h2>Getting Started</h2>
+      <p class="section-lead">Get Local Web Services running with the sample project in under five minutes.</p>
+
+      <div class="getting-started-steps">
+        <div class="gs-step">
+          <h3>Prerequisites</h3>
+          <ul>
+            <li><a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a></li>
+            <li>Node.js 18+</li>
+            <li>AWS CDK CLI (<code>npm install -g aws-cdk</code>)</li>
+          </ul>
+        </div>
+
+        <div class="gs-step">
+          <h3>1. Clone the sample project</h3>
+          <div class="code-block"><code>git clone https://github.com/local-web-services/sample-project.git
+cd sample-project
+npm install</code></div>
+        </div>
+
+        <div class="gs-step">
+          <h3>2. Synthesize the CDK app</h3>
+          <div class="code-block"><code>cdk synth</code></div>
+        </div>
+
+        <div class="gs-step">
+          <h3>3. Start the local environment</h3>
+          <div class="code-block"><code>uvx local-web-services ldk dev</code></div>
+          <p>The <code>ldk dev</code> command reads the cloud assembly and starts local providers for every resource in the stack — DynamoDB tables, SQS queues, S3 buckets, Lambda functions, and an API Gateway — all wired together.</p>
+          <p>Once started, open <strong>http://localhost:3000/_ldk/gui</strong> to access the web dashboard with real-time logs, resource explorer, and system status.</p>
+        </div>
+
+        <div class="gs-step">
+          <h3>4. Make requests</h3>
+          <div class="code-block"><code># Create an order via API Gateway
+curl -X POST http://localhost:3000/orders \
+  -H "Content-Type: application/json" \
+  -d '{"customerName": "Jane", "items": ["Widget"], "total": 29.99}'
+
+# Get the order
+curl http://localhost:3000/orders/{orderId}
+
+# Inspect data with lws
+uvx local-web-services lws dynamodb scan --table-name OrdersTable
+uvx local-web-services lws sqs receive-message --queue-name OrderQueue
+uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code></div>
+          <p>The sample project is an order processing system with API Gateway, Lambda, DynamoDB, SQS, SNS, S3, and Step Functions — all running on your machine. Use <code>lws</code> commands to inspect the data your application creates.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="services">
+    <div class="container">
+      <h2>Supported Services</h2>
+      <p class="section-lead">Each service has two dimensions of support: <strong>CDK constructs</strong> parsed from your <code>cdk synth</code> output, and <strong>API operations</strong> emulated at runtime.</p>
+      <div class="services-list">
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>DynamoDB</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>CDK Constructs</h4>
+            <div class="service-detail-ops">
+              <span class="cdk">aws_dynamodb.Table</span>
+            </div>
+            <p class="cdk-props"><code>tableName</code>, <code>partitionKey</code>, <code>sortKey</code>, <code>globalSecondaryIndexes</code></p>
+          </div>
+          <div class="service-detail-section">
+            <h4>API Operations</h4>
+            <div class="service-detail-ops">
+              <span class="op">PutItem</span>
+              <span class="op">GetItem</span>
+              <span class="op">DeleteItem</span>
+              <span class="op">UpdateItem</span>
+              <span class="op">Query</span>
+              <span class="op">Scan</span>
+              <span class="op">BatchGetItem</span>
+              <span class="op">BatchWriteItem</span>
+              <span class="op-no">CreateTable</span>
+              <span class="op-no">DeleteTable</span>
+              <span class="op-no">DescribeTable</span>
+              <span class="op-no">TransactGetItems</span>
+              <span class="op-no">TransactWriteItems</span>
+            </div>
+          </div>
+          <p class="service-note">Backed by SQLite. Supports expression attribute names/values, filter expressions, and eventual consistency simulation.</p>
+        </div>
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>SQS</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>CDK Constructs</h4>
+            <div class="service-detail-ops">
+              <span class="cdk">aws_sqs.Queue</span>
+            </div>
+            <p class="cdk-props"><code>queueName</code>, <code>fifo</code>, <code>visibilityTimeout</code>, <code>contentBasedDeduplication</code>, <code>deadLetterQueue</code></p>
+          </div>
+          <div class="service-detail-section">
+            <h4>API Operations</h4>
+            <div class="service-detail-ops">
+              <span class="op">SendMessage</span>
+              <span class="op">ReceiveMessage</span>
+              <span class="op">DeleteMessage</span>
+              <span class="op">CreateQueue</span>
+              <span class="op">GetQueueUrl</span>
+              <span class="op">GetQueueAttributes</span>
+              <span class="op-no">SendMessageBatch</span>
+              <span class="op-no">DeleteMessageBatch</span>
+              <span class="op-no">PurgeQueue</span>
+              <span class="op-no">ChangeMessageVisibility</span>
+            </div>
+          </div>
+          <p class="service-note">Supports message attributes, long polling, and dead-letter queue wiring from RedrivePolicy.</p>
+        </div>
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>S3</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>CDK Constructs</h4>
+            <div class="service-detail-ops">
+              <span class="cdk">aws_s3.Bucket</span>
+            </div>
+            <p class="cdk-props"><code>bucketName</code></p>
+          </div>
+          <div class="service-detail-section">
+            <h4>API Operations</h4>
+            <div class="service-detail-ops">
+              <span class="op">PutObject</span>
+              <span class="op">GetObject</span>
+              <span class="op">DeleteObject</span>
+              <span class="op">HeadObject</span>
+              <span class="op">ListObjectsV2</span>
+              <span class="op-no">CopyObject</span>
+              <span class="op-no">DeleteObjects</span>
+              <span class="op-no">CreateMultipartUpload</span>
+              <span class="op-no">ListBuckets</span>
+            </div>
+          </div>
+          <p class="service-note">Backed by the local filesystem. Supports event notifications (ObjectCreated, ObjectRemoved), presigned URL generation, ETags, and content-type headers.</p>
+        </div>
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>SNS</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>CDK Constructs</h4>
+            <div class="service-detail-ops">
+              <span class="cdk">aws_sns.Topic</span>
+            </div>
+            <p class="cdk-props"><code>topicName</code>. <code>aws_sns.Subscription</code> is not parsed &mdash; subscriptions are wired at runtime via the API or auto-wired by LDK for Lambda/SQS targets.</p>
+          </div>
+          <div class="service-detail-section">
+            <h4>API Operations</h4>
+            <div class="service-detail-ops">
+              <span class="op">Publish</span>
+              <span class="op">Subscribe</span>
+              <span class="op">CreateTopic</span>
+              <span class="op">ListTopics</span>
+              <span class="op">ListSubscriptions</span>
+              <span class="op-no">Unsubscribe</span>
+              <span class="op-no">DeleteTopic</span>
+              <span class="op-no">SetSubscriptionAttributes</span>
+            </div>
+          </div>
+          <p class="service-note">Supports Lambda and SQS subscription protocols, message attributes, and fan-out to multiple subscribers.</p>
+        </div>
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>EventBridge</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>CDK Constructs</h4>
+            <div class="service-detail-ops">
+              <span class="cdk">aws_events.EventBus</span>
+              <span class="cdk">aws_events.Rule</span>
+            </div>
+            <p class="cdk-props"><code>eventBusName</code>, <code>ruleName</code>, <code>eventBus</code>, <code>eventPattern</code>, <code>schedule</code>, <code>targets</code></p>
+          </div>
+          <div class="service-detail-section">
+            <h4>API Operations</h4>
+            <div class="service-detail-ops">
+              <span class="op">PutEvents</span>
+              <span class="op">PutRule</span>
+              <span class="op">PutTargets</span>
+              <span class="op">ListRules</span>
+              <span class="op">ListEventBuses</span>
+              <span class="op-no">RemoveTargets</span>
+              <span class="op-no">DeleteRule</span>
+              <span class="op-no">DescribeRule</span>
+            </div>
+          </div>
+          <p class="service-note">Supports event pattern matching, schedule expressions (rate and cron), Lambda targets, and input transformations.</p>
+        </div>
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>Step Functions</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>CDK Constructs</h4>
+            <div class="service-detail-ops">
+              <span class="cdk">aws_stepfunctions.StateMachine</span>
+            </div>
+            <p class="cdk-props"><code>stateMachineName</code>, <code>definitionBody</code>, <code>stateMachineType</code></p>
+          </div>
+          <div class="service-detail-section">
+            <h4>API Operations</h4>
+            <div class="service-detail-ops">
+              <span class="op">StartExecution</span>
+              <span class="op">StartSyncExecution</span>
+              <span class="op">DescribeExecution</span>
+              <span class="op">ListExecutions</span>
+              <span class="op">ListStateMachines</span>
+              <span class="op-no">StopExecution</span>
+              <span class="op-no">GetExecutionHistory</span>
+              <span class="op-no">CreateStateMachine</span>
+            </div>
+          </div>
+          <p class="service-note">State types: Task, Pass, Choice, Wait, Succeed, Fail, Parallel, Map. Supports JSONPath (InputPath, OutputPath, ResultPath), error handling (Retry, Catch), and Standard &amp; Express workflows.</p>
+        </div>
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>Cognito</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>CDK Constructs</h4>
+            <div class="service-detail-ops">
+              <span class="cdk">aws_cognito.UserPool</span>
+              <span class="cdk">aws_cognito.UserPoolClient</span>
+            </div>
+            <p class="cdk-props"><code>userPoolName</code>, <code>lambdaTriggers</code> (preAuthentication, postConfirmation), <code>passwordPolicy</code>, <code>userPool</code></p>
+          </div>
+          <div class="service-detail-section">
+            <h4>API Operations</h4>
+            <div class="service-detail-ops">
+              <span class="op">SignUp</span>
+              <span class="op">ConfirmSignUp</span>
+              <span class="op">InitiateAuth</span>
+              <span class="op">JWKS</span>
+              <span class="op-no">AdminCreateUser</span>
+              <span class="op-no">ForgotPassword</span>
+              <span class="op-no">ChangePassword</span>
+              <span class="op-no">GlobalSignOut</span>
+            </div>
+          </div>
+          <p class="service-note">Backed by SQLite. Supports JWT token generation (ID, access, refresh), user attributes, and password hashing.</p>
+        </div>
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>Lambda</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>CDK Constructs</h4>
+            <div class="service-detail-ops">
+              <span class="cdk">aws_lambda.Function</span>
+            </div>
+            <p class="cdk-props"><code>handler</code>, <code>runtime</code>, <code>code</code>, <code>timeout</code>, <code>memorySize</code>, <code>environment</code></p>
+          </div>
+          <p class="service-note">Runs functions locally using Python or Node.js runtimes. Supports timeout enforcement, realistic context objects, and environment variable injection. Not an AWS API endpoint &mdash; functions are invoked by other services (API Gateway, SNS, EventBridge, Step Functions).</p>
+        </div>
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>API Gateway</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>CDK Constructs</h4>
+            <div class="service-detail-ops">
+              <span class="cdk">aws_apigateway.RestApi</span>
+              <span class="cdk">aws_apigatewayv2.HttpApi</span>
+            </div>
+            <p class="cdk-props"><code>routes</code>, <code>methods</code>, <code>integrations</code></p>
+          </div>
+          <p class="service-note">HTTP API (V1 proxy integration) that routes requests to local Lambda functions. Supports path parameters, query parameters, and request/response mapping.</p>
+        </div>
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>ECS</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>CDK Constructs</h4>
+            <div class="service-detail-ops">
+              <span class="cdk">aws_ecs.TaskDefinition</span>
+              <span class="cdk">aws_ecs.FargateService</span>
+              <span class="cdk">aws_ecs.Ec2Service</span>
+            </div>
+            <p class="cdk-props"><code>containerDefinitions</code>, <code>taskDefinition</code></p>
+          </div>
+          <p class="service-note">Runs services as local subprocesses. Supports health checking, service discovery, file watching with auto-restart, and port mapping. Supports local command overrides via <code>ldk.local_command</code> metadata.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="cli">
+    <div class="container">
+      <h2>CLI Reference</h2>
+      <p class="section-lead">Complete command reference for both <code>ldk</code> and <code>lws</code> tools.</p>
+
+      <h3 style="font-size: 2rem; margin-bottom: 32px; color: var(--color-primary);">LDK Commands</h3>
+
+      <div class="cli-detail">
+        <div class="code-block"><code>uvx local-web-services ldk dev [OPTIONS]</code></div>
+        <h3>ldk dev</h3>
+        <p>Start the full local environment with hot-reload. Watches your source files and restarts handlers on change.</p>
+        <ul class="option-list">
+          <li><code>--port, -p</code> <span>API Gateway listen port (default: 3000)</span></li>
+          <li><code>--no-persist</code> <span>Disable data persistence — data is lost when ldk stops</span></li>
+          <li><code>--force-synth</code> <span>Force CDK synth even if cdk.out exists</span></li>
+          <li><code>--log-level, -l</code> <span>Log level: debug, info, warning, error (default: info)</span></li>
+          <li><code>--project-dir, -d</code> <span>Project root directory (default: current directory)</span></li>
+        </ul>
+      </div>
+
+      <div class="cli-detail">
+        <div class="code-block"><code>uvx local-web-services ldk invoke [OPTIONS]</code></div>
+        <h3>ldk invoke</h3>
+        <p>Invoke a Lambda function directly with a JSON event payload. Useful for testing handlers in isolation.</p>
+        <ul class="option-list">
+          <li><code>--function-name, -f</code> <span>Lambda function name (required)</span></li>
+          <li><code>--event, -e</code> <span>Inline JSON event payload</span></li>
+          <li><code>--event-file</code> <span>Path to JSON event file</span></li>
+          <li><code>--project-dir, -d</code> <span>Project root directory (default: current directory)</span></li>
+          <li><code>--port, -p</code> <span>Management API port to connect to running ldk dev</span></li>
+        </ul>
+      </div>
+
+      <div class="cli-detail">
+        <div class="code-block"><code>uvx local-web-services ldk reset [OPTIONS]</code></div>
+        <h3>ldk reset</h3>
+        <p>Clear all persisted local state — databases, queues, buckets. Start fresh.</p>
+        <ul class="option-list">
+          <li><code>--yes, -y</code> <span>Skip confirmation prompt</span></li>
+          <li><code>--project-dir, -d</code> <span>Project root directory (default: current directory)</span></li>
+          <li><code>--port, -p</code> <span>Management API port to notify running ldk dev</span></li>
+        </ul>
+      </div>
+
+      <h3 style="font-size: 2rem; margin: 80px 0 32px; color: var(--color-primary);">LWS Commands</h3>
+      <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 48px; font-size: 1.125rem;">AWS CLI-style commands for interacting with your local services. Requires a running <code>ldk dev</code> instance.</p>
+
+      <div class="lws-command-grid">
+        <div class="lws-command">
+          <h4>lws status</h4>
+          <p>Show the status of the running ldk dev instance and all providers.</p>
+          <div class="code-block"><code>uvx local-web-services lws status</code></div>
+        </div>
+
+        <div class="lws-command">
+          <h4>lws dynamodb</h4>
+          <p>DynamoDB table operations.</p>
+          <div>
+            <span class="subcmd">put-item</span>
+            <span class="subcmd">get-item</span>
+            <span class="subcmd">delete-item</span>
+            <span class="subcmd">scan</span>
+            <span class="subcmd">query</span>
+          </div>
+          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws dynamodb scan \
+  --table-name MyTable</code></div>
+        </div>
+
+        <div class="lws-command">
+          <h4>lws sqs</h4>
+          <p>SQS queue operations.</p>
+          <div>
+            <span class="subcmd">send-message</span>
+            <span class="subcmd">receive-message</span>
+            <span class="subcmd">delete-message</span>
+            <span class="subcmd">get-queue-attributes</span>
+          </div>
+          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws sqs receive-message \
+  --queue-name MyQueue</code></div>
+        </div>
+
+        <div class="lws-command">
+          <h4>lws s3api</h4>
+          <p>S3 bucket operations.</p>
+          <div>
+            <span class="subcmd">put-object</span>
+            <span class="subcmd">get-object</span>
+            <span class="subcmd">delete-object</span>
+            <span class="subcmd">list-objects-v2</span>
+            <span class="subcmd">head-object</span>
+          </div>
+          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws s3api list-objects-v2 \
+  --bucket my-bucket</code></div>
+        </div>
+
+        <div class="lws-command">
+          <h4>lws sns</h4>
+          <p>SNS topic operations.</p>
+          <div>
+            <span class="subcmd">publish</span>
+            <span class="subcmd">list-topics</span>
+            <span class="subcmd">list-subscriptions</span>
+          </div>
+          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws sns publish \
+  --topic-name MyTopic \
+  --message "Hello"</code></div>
+        </div>
+
+        <div class="lws-command">
+          <h4>lws events</h4>
+          <p>EventBridge operations.</p>
+          <div>
+            <span class="subcmd">put-events</span>
+            <span class="subcmd">list-rules</span>
+          </div>
+          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws events put-events \
+  --entries '[{...}]'</code></div>
+        </div>
+
+        <div class="lws-command">
+          <h4>lws stepfunctions</h4>
+          <p>Step Functions operations.</p>
+          <div>
+            <span class="subcmd">start-execution</span>
+            <span class="subcmd">describe-execution</span>
+            <span class="subcmd">list-executions</span>
+            <span class="subcmd">list-state-machines</span>
+          </div>
+          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws stepfunctions start-execution \
+  --name MyStateMachine \
+  --input '{...}'</code></div>
+        </div>
+
+        <div class="lws-command">
+          <h4>lws cognito-idp</h4>
+          <p>Cognito User Pool operations.</p>
+          <div>
+            <span class="subcmd">sign-up</span>
+            <span class="subcmd">confirm-sign-up</span>
+            <span class="subcmd">initiate-auth</span>
+          </div>
+          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws cognito-idp sign-up \
+  --user-pool-name MyPool \
+  --username user@example.com</code></div>
+        </div>
+
+        <div class="lws-command">
+          <h4>lws apigateway</h4>
+          <p>API Gateway test invocation.</p>
+          <div>
+            <span class="subcmd">test-invoke-method</span>
+          </div>
+          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws apigateway test-invoke-method \
+  --resource /orders \
+  --http-method GET</code></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="nav-logo">Local Web Services</span>
+          <p>Run AWS CDK apps locally</p>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/local-web-services/local-web-services">GitHub</a>
+          <a href="https://github.com/local-web-services/sample-project">Sample Project</a>
+          <a href="https://github.com/local-web-services/local-web-services/issues">Issues</a>
+        </div>
+      </div>
+      <p class="footer-copy">Open source under the MIT License.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
