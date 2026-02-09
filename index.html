@@ -35,7 +35,7 @@ No credentials. No cost. No waiting.</p>
         <a href="https://github.com/local-web-services/local-web-services" class="btn btn-secondary">View on GitHub</a>
       </div>
       <div class="hero-install">
-        <code>uvx local-web-services ldk dev</code>
+        <code>uvx --from local-web-services ldk dev</code>
       </div>
     </div>
   </header>
@@ -119,7 +119,7 @@ No credentials. No cost. No waiting.</p>
           <h3>With Local Web Services</h3>
           <ul>
             <li>Edit code</li>
-            <li>Run <code>uvx local-web-services ldk dev</code> — ready in seconds</li>
+            <li>Run <code>uvx --from local-web-services ldk dev</code> — ready in seconds</li>
             <li>Edit code — hot reload picks up changes instantly</li>
             <li>Test against local services</li>
             <li>Use lws commands to inspect data</li>
@@ -229,7 +229,7 @@ npm install</code></div>
 
         <div class="gs-step">
           <h3>3. Start the local environment</h3>
-          <div class="code-block"><code>uvx local-web-services ldk dev</code></div>
+          <div class="code-block"><code>uvx --from local-web-services ldk dev</code></div>
           <p>The <code>ldk dev</code> command reads the cloud assembly and starts local providers for every resource in the stack — DynamoDB tables, SQS queues, S3 buckets, Lambda functions, and an API Gateway — all wired together.</p>
           <p>Once started, open <strong>http://localhost:3000/_ldk/gui</strong> to access the web dashboard with real-time logs, resource explorer, and system status.</p>
         </div>
@@ -245,9 +245,9 @@ curl -X POST http://localhost:3000/orders \
 curl http://localhost:3000/orders/{orderId}
 
 # Inspect data with lws
-uvx local-web-services lws dynamodb scan --table-name OrdersTable
-uvx local-web-services lws sqs receive-message --queue-name OrderQueue
-uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code></div>
+uvx --from local-web-services lws dynamodb scan --table-name OrdersTable
+uvx --from local-web-services lws sqs receive-message --queue-name OrderQueue
+uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents</code></div>
           <p>The sample project is an order processing system with API Gateway, Lambda, DynamoDB, SQS, SNS, S3, and Step Functions — all running on your machine. Use <code>lws</code> commands to inspect the data your application creates.</p>
         </div>
       </div>
@@ -505,7 +505,7 @@ uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code>
       <h3 style="font-size: 2rem; margin-bottom: 32px; color: var(--color-primary);">LDK Commands</h3>
 
       <div class="cli-detail">
-        <div class="code-block"><code>uvx local-web-services ldk dev [OPTIONS]</code></div>
+        <div class="code-block"><code>uvx --from local-web-services ldk dev [OPTIONS]</code></div>
         <h3>ldk dev</h3>
         <p>Start the full local environment with hot-reload. Watches your source files and restarts handlers on change.</p>
         <ul class="option-list">
@@ -518,7 +518,7 @@ uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code>
       </div>
 
       <div class="cli-detail">
-        <div class="code-block"><code>uvx local-web-services ldk invoke [OPTIONS]</code></div>
+        <div class="code-block"><code>uvx --from local-web-services ldk invoke [OPTIONS]</code></div>
         <h3>ldk invoke</h3>
         <p>Invoke a Lambda function directly with a JSON event payload. Useful for testing handlers in isolation.</p>
         <ul class="option-list">
@@ -531,7 +531,7 @@ uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code>
       </div>
 
       <div class="cli-detail">
-        <div class="code-block"><code>uvx local-web-services ldk reset [OPTIONS]</code></div>
+        <div class="code-block"><code>uvx --from local-web-services ldk reset [OPTIONS]</code></div>
         <h3>ldk reset</h3>
         <p>Clear all persisted local state — databases, queues, buckets. Start fresh.</p>
         <ul class="option-list">
@@ -548,7 +548,7 @@ uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code>
         <div class="lws-command">
           <h4>lws status</h4>
           <p>Show the status of the running ldk dev instance and all providers.</p>
-          <div class="code-block"><code>uvx local-web-services lws status</code></div>
+          <div class="code-block"><code>uvx --from local-web-services lws status</code></div>
         </div>
 
         <div class="lws-command">
@@ -561,7 +561,7 @@ uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code>
             <span class="subcmd">scan</span>
             <span class="subcmd">query</span>
           </div>
-          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws dynamodb scan \
+          <div class="code-block" style="margin-top: 12px;"><code>uvx --from local-web-services lws dynamodb scan \
   --table-name MyTable</code></div>
         </div>
 
@@ -574,7 +574,7 @@ uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code>
             <span class="subcmd">delete-message</span>
             <span class="subcmd">get-queue-attributes</span>
           </div>
-          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws sqs receive-message \
+          <div class="code-block" style="margin-top: 12px;"><code>uvx --from local-web-services lws sqs receive-message \
   --queue-name MyQueue</code></div>
         </div>
 
@@ -588,7 +588,7 @@ uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code>
             <span class="subcmd">list-objects-v2</span>
             <span class="subcmd">head-object</span>
           </div>
-          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws s3api list-objects-v2 \
+          <div class="code-block" style="margin-top: 12px;"><code>uvx --from local-web-services lws s3api list-objects-v2 \
   --bucket my-bucket</code></div>
         </div>
 
@@ -600,7 +600,7 @@ uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code>
             <span class="subcmd">list-topics</span>
             <span class="subcmd">list-subscriptions</span>
           </div>
-          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws sns publish \
+          <div class="code-block" style="margin-top: 12px;"><code>uvx --from local-web-services lws sns publish \
   --topic-name MyTopic \
   --message "Hello"</code></div>
         </div>
@@ -612,7 +612,7 @@ uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code>
             <span class="subcmd">put-events</span>
             <span class="subcmd">list-rules</span>
           </div>
-          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws events put-events \
+          <div class="code-block" style="margin-top: 12px;"><code>uvx --from local-web-services lws events put-events \
   --entries '[{...}]'</code></div>
         </div>
 
@@ -625,7 +625,7 @@ uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code>
             <span class="subcmd">list-executions</span>
             <span class="subcmd">list-state-machines</span>
           </div>
-          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws stepfunctions start-execution \
+          <div class="code-block" style="margin-top: 12px;"><code>uvx --from local-web-services lws stepfunctions start-execution \
   --name MyStateMachine \
   --input '{...}'</code></div>
         </div>
@@ -638,7 +638,7 @@ uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code>
             <span class="subcmd">confirm-sign-up</span>
             <span class="subcmd">initiate-auth</span>
           </div>
-          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws cognito-idp sign-up \
+          <div class="code-block" style="margin-top: 12px;"><code>uvx --from local-web-services lws cognito-idp sign-up \
   --user-pool-name MyPool \
   --username user@example.com</code></div>
         </div>
@@ -649,7 +649,7 @@ uvx local-web-services lws s3api list-objects-v2 --bucket order-documents</code>
           <div>
             <span class="subcmd">test-invoke-method</span>
           </div>
-          <div class="code-block" style="margin-top: 12px;"><code>uvx local-web-services lws apigateway test-invoke-method \
+          <div class="code-block" style="margin-top: 12px;"><code>uvx --from local-web-services lws apigateway test-invoke-method \
   --resource /orders \
   --http-method GET</code></div>
         </div>
