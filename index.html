@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Local Web Services - Run AWS CDK Apps Locally</title>
-  <meta name="description" content="Local Web Services reads your AWS CDK cloud assembly and recreates your application locally. Build, test, and debug cloud-native AWS apps without deploying — no credentials, no cost, no waiting.">
+  <title>Local Web Services - Run AWS CDK & Terraform Apps Locally</title>
+  <meta name="description" content="Local Web Services reads your AWS CDK or Terraform project and recreates your application locally. Build, test, and debug cloud-native AWS apps without deploying — no credentials, no cost, no waiting.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,7 +27,7 @@
   <header class="hero">
     <div class="container">
       <h1>Local Web Services</h1>
-      <p class="hero-subtitle">Run your AWS CDK applications locally with ldk dev.<br>
+      <p class="hero-subtitle">Run your AWS CDK and Terraform applications locally with ldk dev.<br>
 Interact with local services using lws.<br>
 No credentials. No cost. No waiting.</p>
       <div class="hero-actions">
@@ -43,13 +43,13 @@ No credentials. No cost. No waiting.</p>
   <section class="section" id="what">
     <div class="container">
       <h2>What is Local Web Services?</h2>
-      <p class="section-lead">Local Web Services is an open-source tool that reads your AWS CDK cloud assembly and recreates your entire application locally. Two complementary CLI tools work together: <code>ldk</code> runs your infrastructure, and <code>lws</code> lets you interact with it.</p>
+      <p class="section-lead">Local Web Services is an open-source tool that reads your AWS CDK or Terraform project and recreates your entire application locally. It supports both CDK (via <code>cdk synth</code>) and Terraform (via <code>terraform apply</code>) with automatic project type detection. Two complementary CLI tools work together: <code>ldk</code> runs your infrastructure, and <code>lws</code> lets you interact with it.</p>
 
       <div class="feature-grid" style="grid-template-columns: 1fr 1fr; max-width: 900px; margin: 0 auto 64px;">
         <div class="feature-card">
           <div class="feature-icon">⚡</div>
           <h3>ldk</h3>
-          <p>The development server. Parses your CDK application and spins up local providers for every AWS service you use — DynamoDB, Lambda, S3, SQS, and more. Your entire stack runs locally.</p>
+          <p>The development server. Parses your CDK or Terraform project and spins up local providers for every AWS service you use — DynamoDB, Lambda, S3, SQS, and more. Your entire stack runs locally.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🔧</div>
@@ -100,14 +100,14 @@ No credentials. No cost. No waiting.</p>
   <section class="section section-alt" id="why">
     <div class="container">
       <h2>Why Use Local Web Services?</h2>
-      <p class="section-lead">Building with AWS CDK traditionally means deploying to the cloud just to test your code. Every change triggers a deploy-wait-test cycle that kills your flow and racks up costs.</p>
+      <p class="section-lead">Building with AWS CDK or Terraform traditionally means deploying to the cloud just to test your code. Every change triggers a deploy-wait-test cycle that kills your flow and racks up costs.</p>
 
       <div class="comparison">
         <div class="comparison-col comparison-before">
           <h3>Without Local Web Services</h3>
           <ul>
             <li>Edit code</li>
-            <li>Run <code>cdk deploy</code> — wait minutes</li>
+            <li>Run <code>cdk deploy</code> or <code>terraform apply</code> — wait minutes</li>
             <li>Test against live AWS resources</li>
             <li>Check CloudWatch logs for errors</li>
             <li>Pay for every invocation and resource</li>
@@ -166,7 +166,9 @@ No credentials. No cost. No waiting.</p>
   <section class="section" id="how-it-works">
     <div class="container">
       <h2>How It Works</h2>
-      <p class="section-lead">Local Web Services parses the output of <code>cdk synth</code>, builds a dependency graph of your infrastructure, and starts local providers for each AWS service — in the right order.</p>
+      <p class="section-lead">Local Web Services auto-detects your project type (CDK or Terraform) and starts local AWS-compatible service endpoints. Your code talks to local services instead of real AWS.</p>
+
+      <h3 style="font-size: 1.75rem; text-align: center; margin-bottom: 48px; color: var(--color-text);">CDK Mode</h3>
       <div class="steps">
         <div class="step">
           <div class="step-number">1</div>
@@ -197,13 +199,47 @@ No credentials. No cost. No waiting.</p>
           </div>
         </div>
       </div>
+
+      <h3 style="font-size: 1.75rem; text-align: center; margin-top: 80px; margin-bottom: 48px; color: var(--color-text);">Terraform Mode</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Detect</h3>
+            <p>The <code>ldk</code> tool detects <code>.tf</code> files in your project directory and enters Terraform mode automatically (or use <code>--mode terraform</code> explicitly).</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Start All Services</h3>
+            <p>All AWS service providers start in always-on mode — DynamoDB, SQS, S3, SNS, EventBridge, Step Functions, Cognito, API Gateway, Lambda, IAM, and STS. Each service gets its own port.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Override</h3>
+            <p>A <code>_lws_override.tf</code> file is generated that redirects all AWS provider endpoints to your local services. This file is automatically added to <code>.gitignore</code>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3>Apply</h3>
+            <p>Run <code>terraform apply</code> as normal. Terraform creates resources (tables, queues, buckets, Lambda functions) against your local endpoints. Your Lambda handlers run locally with full AWS SDK support.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
   <section class="section section-alt" id="getting-started">
     <div class="container">
       <h2>Getting Started</h2>
-      <p class="section-lead">Get Local Web Services running with the sample project in under five minutes.</p>
+      <p class="section-lead">Get Local Web Services running with a sample project in under five minutes. Choose your IaC tool below.</p>
+
+      <h3 style="font-size: 1.75rem; text-align: center; margin-bottom: 32px; color: var(--color-primary);">CDK Quick Start</h3>
 
       <div class="getting-started-steps">
         <div class="gs-step">
@@ -251,13 +287,66 @@ uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents
           <p>The sample project is an order processing system with API Gateway, Lambda, DynamoDB, SQS, SNS, S3, and Step Functions — all running on your machine. Use <code>lws</code> commands to inspect the data your application creates.</p>
         </div>
       </div>
+
+      <h3 style="font-size: 1.75rem; text-align: center; margin-top: 80px; margin-bottom: 32px; color: var(--color-primary);">Terraform Quick Start</h3>
+
+      <div class="getting-started-steps">
+        <div class="gs-step">
+          <h3>Prerequisites</h3>
+          <ul>
+            <li><a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a></li>
+            <li>Node.js 18+</li>
+            <li><a href="https://www.terraform.io/">Terraform</a> >= 1.0</li>
+          </ul>
+        </div>
+
+        <div class="gs-step">
+          <h3>1. Clone the Terraform sample project</h3>
+          <div class="code-block"><code>git clone https://github.com/local-web-services/sample-project-terraform.git
+cd sample-project-terraform
+cd lambda/create-order && npm install && cd ../..
+cd lambda/get-order && npm install && cd ../..
+cd lambda/process-order && npm install && cd ../..
+cd lambda/generate-receipt && npm install && cd ../..</code></div>
+        </div>
+
+        <div class="gs-step">
+          <h3>2. Initialize Terraform</h3>
+          <div class="code-block"><code>terraform init</code></div>
+        </div>
+
+        <div class="gs-step">
+          <h3>3. Start the local environment</h3>
+          <div class="code-block"><code>uvx --from local-web-services ldk dev</code></div>
+          <p>The <code>ldk dev</code> command auto-detects your Terraform project, starts all AWS service providers in always-on mode, and generates a <code>_lws_override.tf</code> file that redirects Terraform's AWS provider to your local endpoints.</p>
+        </div>
+
+        <div class="gs-step">
+          <h3>4. Apply Terraform</h3>
+          <p>In another terminal, apply your Terraform configuration against the local services:</p>
+          <div class="code-block"><code>terraform apply -auto-approve</code></div>
+          <p>Terraform creates all resources (DynamoDB tables, SQS queues, Lambda functions, API Gateway routes, etc.) against your local endpoints. No AWS account needed.</p>
+        </div>
+
+        <div class="gs-step">
+          <h3>5. Test the application</h3>
+          <div class="code-block"><code># Run the end-to-end test script
+bash test-orders.sh
+
+# Or test manually with lws commands
+uvx --from local-web-services lws dynamodb scan --table-name Orders
+uvx --from local-web-services lws stepfunctions start-execution \
+  --name OrderWorkflow \
+  --input '{"orderId": "test-123", "items": ["widget"], "total": 29.99}'</code></div>
+        </div>
+      </div>
     </div>
   </section>
 
   <section class="section" id="services">
     <div class="container">
       <h2>Supported Services</h2>
-      <p class="section-lead">Each service has two dimensions of support: <strong>CDK constructs</strong> parsed from your <code>cdk synth</code> output, and <strong>API operations</strong> emulated at runtime.</p>
+      <p class="section-lead">Each service provides AWS-compatible API operations emulated at runtime. In CDK mode, <strong>CDK constructs</strong> are parsed from your <code>cdk synth</code> output. In Terraform mode, all services start in always-on mode and resources are created dynamically via management APIs.</p>
       <div class="services-list">
         <div class="service-detail">
           <div class="service-detail-header">
@@ -281,9 +370,10 @@ uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents
               <span class="op">Scan</span>
               <span class="op">BatchGetItem</span>
               <span class="op">BatchWriteItem</span>
-              <span class="op-no">CreateTable</span>
-              <span class="op-no">DeleteTable</span>
-              <span class="op-no">DescribeTable</span>
+              <span class="op">CreateTable</span>
+              <span class="op">DeleteTable</span>
+              <span class="op">DescribeTable</span>
+              <span class="op">ListTables</span>
               <span class="op-no">TransactGetItems</span>
               <span class="op-no">TransactWriteItems</span>
             </div>
@@ -310,9 +400,12 @@ uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents
               <span class="op">CreateQueue</span>
               <span class="op">GetQueueUrl</span>
               <span class="op">GetQueueAttributes</span>
+              <span class="op">SetQueueAttributes</span>
+              <span class="op">DeleteQueue</span>
+              <span class="op">ListQueues</span>
+              <span class="op">PurgeQueue</span>
               <span class="op-no">SendMessageBatch</span>
               <span class="op-no">DeleteMessageBatch</span>
-              <span class="op-no">PurgeQueue</span>
               <span class="op-no">ChangeMessageVisibility</span>
             </div>
           </div>
@@ -337,10 +430,13 @@ uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents
               <span class="op">DeleteObject</span>
               <span class="op">HeadObject</span>
               <span class="op">ListObjectsV2</span>
+              <span class="op">CreateBucket</span>
+              <span class="op">DeleteBucket</span>
+              <span class="op">HeadBucket</span>
+              <span class="op">ListBuckets</span>
               <span class="op-no">CopyObject</span>
               <span class="op-no">DeleteObjects</span>
               <span class="op-no">CreateMultipartUpload</span>
-              <span class="op-no">ListBuckets</span>
             </div>
           </div>
           <p class="service-note">Backed by the local filesystem. Supports event notifications (ObjectCreated, ObjectRemoved), presigned URL generation, ETags, and content-type headers.</p>
@@ -364,8 +460,9 @@ uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents
               <span class="op">CreateTopic</span>
               <span class="op">ListTopics</span>
               <span class="op">ListSubscriptions</span>
+              <span class="op">DeleteTopic</span>
+              <span class="op">SetTopicAttributes</span>
               <span class="op-no">Unsubscribe</span>
-              <span class="op-no">DeleteTopic</span>
               <span class="op-no">SetSubscriptionAttributes</span>
             </div>
           </div>
@@ -417,9 +514,9 @@ uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents
               <span class="op">DescribeExecution</span>
               <span class="op">ListExecutions</span>
               <span class="op">ListStateMachines</span>
+              <span class="op">CreateStateMachine</span>
               <span class="op-no">StopExecution</span>
               <span class="op-no">GetExecutionHistory</span>
-              <span class="op-no">CreateStateMachine</span>
             </div>
           </div>
           <p class="service-note">State types: Task, Pass, Choice, Wait, Succeed, Fail, Parallel, Map. Supports JSONPath (InputPath, OutputPath, ResultPath), error handling (Retry, Catch), and Standard &amp; Express workflows.</p>
@@ -462,7 +559,17 @@ uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents
             </div>
             <p class="cdk-props"><code>handler</code>, <code>runtime</code>, <code>code</code>, <code>timeout</code>, <code>memorySize</code>, <code>environment</code></p>
           </div>
-          <p class="service-note">Runs functions locally using Python or Node.js runtimes. Supports timeout enforcement, realistic context objects, and environment variable injection. Not an AWS API endpoint &mdash; functions are invoked by other services (API Gateway, SNS, EventBridge, Step Functions).</p>
+          <div class="service-detail-section">
+            <h4>Management API (Terraform mode)</h4>
+            <div class="service-detail-ops">
+              <span class="op">CreateFunction</span>
+              <span class="op">GetFunction</span>
+              <span class="op">DeleteFunction</span>
+              <span class="op">ListFunctions</span>
+              <span class="op">Invoke</span>
+            </div>
+          </div>
+          <p class="service-note">Runs functions locally using Python or Node.js runtimes. Supports timeout enforcement, realistic context objects, and environment variable injection. In CDK mode, functions are discovered from the cloud assembly. In Terraform mode, functions are created dynamically via the management API.</p>
         </div>
         <div class="service-detail">
           <div class="service-detail-header">
@@ -476,7 +583,31 @@ uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents
             </div>
             <p class="cdk-props"><code>routes</code>, <code>methods</code>, <code>integrations</code></p>
           </div>
-          <p class="service-note">HTTP API (V1 proxy integration) that routes requests to local Lambda functions. Supports path parameters, query parameters, and request/response mapping.</p>
+          <div class="service-detail-section">
+            <h4>REST API (V1) Management</h4>
+            <div class="service-detail-ops">
+              <span class="op">CreateRestApi</span>
+              <span class="op">GetRestApi</span>
+              <span class="op">DeleteRestApi</span>
+              <span class="op">CreateResource</span>
+              <span class="op">PutMethod</span>
+              <span class="op">PutIntegration</span>
+              <span class="op">CreateDeployment</span>
+              <span class="op">CreateStage</span>
+            </div>
+          </div>
+          <div class="service-detail-section">
+            <h4>HTTP API (V2) Management</h4>
+            <div class="service-detail-ops">
+              <span class="op">CreateApi</span>
+              <span class="op">GetApi</span>
+              <span class="op">DeleteApi</span>
+              <span class="op">CreateRoute</span>
+              <span class="op">CreateIntegration</span>
+              <span class="op">CreateStage</span>
+            </div>
+          </div>
+          <p class="service-note">Supports both REST API (V1) and HTTP API (V2) with Lambda proxy integration. Routes requests to local Lambda functions with path parameters, query parameters, and request/response mapping. In Terraform mode, APIs and routes are created dynamically via the management API.</p>
         </div>
         <div class="service-detail">
           <div class="service-detail-header">
@@ -491,7 +622,13 @@ uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents
             </div>
             <p class="cdk-props"><code>containerDefinitions</code>, <code>taskDefinition</code></p>
           </div>
-          <p class="service-note">Runs services as local subprocesses. Supports health checking, service discovery, file watching with auto-restart, and port mapping. Supports local command overrides via <code>ldk.local_command</code> metadata.</p>
+          <p class="service-note">Runs services as local subprocesses. Supports health checking, service discovery, file watching with auto-restart, and port mapping. Supports local command overrides via <code>ldk.local_command</code> metadata. CDK mode only.</p>
+        </div>
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>IAM &amp; STS</h3>
+          </div>
+          <p class="service-note">Stub APIs that return AWS-compatible responses for Terraform compatibility. IAM role and policy operations are accepted and stored in memory. STS returns dummy credentials and caller identity. These stubs allow <code>terraform apply</code> to succeed without a real AWS account.</p>
         </div>
       </div>
     </div>
@@ -514,6 +651,7 @@ uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents
           <li><code>--force-synth</code> <span>Force CDK synth even if cdk.out exists</span></li>
           <li><code>--log-level, -l</code> <span>Log level: debug, info, warning, error (default: info)</span></li>
           <li><code>--project-dir, -d</code> <span>Project root directory (default: current directory)</span></li>
+          <li><code>--mode, -m</code> <span>Project mode: cdk or terraform (default: auto-detect from project files)</span></li>
         </ul>
       </div>
 
@@ -662,11 +800,12 @@ uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents
       <div class="footer-inner">
         <div class="footer-brand">
           <span class="nav-logo">Local Web Services</span>
-          <p>Run AWS CDK apps locally</p>
+          <p>Run AWS CDK &amp; Terraform apps locally</p>
         </div>
         <div class="footer-links">
           <a href="https://github.com/local-web-services/local-web-services">GitHub</a>
-          <a href="https://github.com/local-web-services/sample-project">Sample Project</a>
+          <a href="https://github.com/local-web-services/sample-project">CDK Sample</a>
+          <a href="https://github.com/local-web-services/sample-project-terraform">Terraform Sample</a>
           <a href="https://github.com/local-web-services/local-web-services/issues">Issues</a>
         </div>
       </div>
