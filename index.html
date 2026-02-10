@@ -213,7 +213,7 @@ No credentials. No cost. No waiting.</p>
           <div class="step-number">2</div>
           <div class="step-content">
             <h3>Start All Services</h3>
-            <p>All AWS service providers start in always-on mode — DynamoDB, SQS, S3, SNS, EventBridge, Step Functions, Cognito, API Gateway, Lambda, IAM, and STS. Each service gets its own port.</p>
+            <p>All AWS service providers start in always-on mode — DynamoDB, SQS, S3, SNS, EventBridge, Step Functions, Cognito, API Gateway, Lambda, IAM, STS, SSM Parameter Store, and Secrets Manager. Each service gets its own port.</p>
           </div>
         </div>
         <div class="step">
@@ -374,8 +374,11 @@ uvx --from local-web-services lws stepfunctions start-execution \
               <span class="op">DeleteTable</span>
               <span class="op">DescribeTable</span>
               <span class="op">ListTables</span>
-              <span class="op-no">TransactGetItems</span>
-              <span class="op-no">TransactWriteItems</span>
+              <span class="op">TransactGetItems</span>
+              <span class="op">TransactWriteItems</span>
+              <span class="op">UpdateTable</span>
+              <span class="op">DescribeContinuousBackups</span>
+              <span class="op">UpdateTimeToLive</span>
             </div>
           </div>
           <p class="service-note">Backed by SQLite. Supports expression attribute names/values, filter expressions, and eventual consistency simulation.</p>
@@ -404,9 +407,11 @@ uvx --from local-web-services lws stepfunctions start-execution \
               <span class="op">DeleteQueue</span>
               <span class="op">ListQueues</span>
               <span class="op">PurgeQueue</span>
-              <span class="op-no">SendMessageBatch</span>
-              <span class="op-no">DeleteMessageBatch</span>
-              <span class="op-no">ChangeMessageVisibility</span>
+              <span class="op">SendMessageBatch</span>
+              <span class="op">DeleteMessageBatch</span>
+              <span class="op">ChangeMessageVisibility</span>
+              <span class="op">ChangeMessageVisibilityBatch</span>
+              <span class="op">ListDeadLetterSourceQueues</span>
             </div>
           </div>
           <p class="service-note">Supports message attributes, long polling, and dead-letter queue wiring from RedrivePolicy.</p>
@@ -434,8 +439,16 @@ uvx --from local-web-services lws stepfunctions start-execution \
               <span class="op">DeleteBucket</span>
               <span class="op">HeadBucket</span>
               <span class="op">ListBuckets</span>
-              <span class="op-no">CopyObject</span>
-              <span class="op-no">DeleteObjects</span>
+              <span class="op">CopyObject</span>
+              <span class="op">DeleteObjects</span>
+              <span class="op">PutBucketTagging</span>
+              <span class="op">GetBucketTagging</span>
+              <span class="op">DeleteBucketTagging</span>
+              <span class="op">GetBucketLocation</span>
+              <span class="op">PutBucketPolicy</span>
+              <span class="op">GetBucketPolicy</span>
+              <span class="op">PutBucketNotificationConfiguration</span>
+              <span class="op">GetBucketNotificationConfiguration</span>
               <span class="op-no">CreateMultipartUpload</span>
             </div>
           </div>
@@ -462,8 +475,11 @@ uvx --from local-web-services lws stepfunctions start-execution \
               <span class="op">ListSubscriptions</span>
               <span class="op">DeleteTopic</span>
               <span class="op">SetTopicAttributes</span>
-              <span class="op-no">Unsubscribe</span>
-              <span class="op-no">SetSubscriptionAttributes</span>
+              <span class="op">Unsubscribe</span>
+              <span class="op">GetSubscriptionAttributes</span>
+              <span class="op">SetSubscriptionAttributes</span>
+              <span class="op">ConfirmSubscription</span>
+              <span class="op">ListSubscriptionsByTopic</span>
             </div>
           </div>
           <p class="service-note">Supports Lambda and SQS subscription protocols, message attributes, and fan-out to multiple subscribers.</p>
@@ -488,9 +504,15 @@ uvx --from local-web-services lws stepfunctions start-execution \
               <span class="op">PutTargets</span>
               <span class="op">ListRules</span>
               <span class="op">ListEventBuses</span>
-              <span class="op-no">RemoveTargets</span>
-              <span class="op-no">DeleteRule</span>
-              <span class="op-no">DescribeRule</span>
+              <span class="op">RemoveTargets</span>
+              <span class="op">DeleteRule</span>
+              <span class="op">DescribeRule</span>
+              <span class="op">ListTargetsByRule</span>
+              <span class="op">EnableRule</span>
+              <span class="op">DisableRule</span>
+              <span class="op">TagResource</span>
+              <span class="op">UntagResource</span>
+              <span class="op">ListTagsForResource</span>
             </div>
           </div>
           <p class="service-note">Supports event pattern matching, schedule expressions (rate and cron), Lambda targets, and input transformations.</p>
@@ -515,8 +537,9 @@ uvx --from local-web-services lws stepfunctions start-execution \
               <span class="op">ListExecutions</span>
               <span class="op">ListStateMachines</span>
               <span class="op">CreateStateMachine</span>
-              <span class="op-no">StopExecution</span>
-              <span class="op-no">GetExecutionHistory</span>
+              <span class="op">StopExecution</span>
+              <span class="op">GetExecutionHistory</span>
+              <span class="op">UpdateStateMachine</span>
             </div>
           </div>
           <p class="service-note">State types: Task, Pass, Choice, Wait, Succeed, Fail, Parallel, Map. Supports JSONPath (InputPath, OutputPath, ResultPath), error handling (Retry, Catch), and Standard &amp; Express workflows.</p>
@@ -540,7 +563,15 @@ uvx --from local-web-services lws stepfunctions start-execution \
               <span class="op">ConfirmSignUp</span>
               <span class="op">InitiateAuth</span>
               <span class="op">JWKS</span>
-              <span class="op-no">AdminCreateUser</span>
+              <span class="op">AdminCreateUser</span>
+              <span class="op">AdminDeleteUser</span>
+              <span class="op">AdminGetUser</span>
+              <span class="op">CreateUserPoolClient</span>
+              <span class="op">DeleteUserPoolClient</span>
+              <span class="op">DescribeUserPoolClient</span>
+              <span class="op">ListUserPoolClients</span>
+              <span class="op">UpdateUserPool</span>
+              <span class="op">ListUsers</span>
               <span class="op-no">ForgotPassword</span>
               <span class="op-no">ChangePassword</span>
               <span class="op-no">GlobalSignOut</span>
@@ -567,6 +598,11 @@ uvx --from local-web-services lws stepfunctions start-execution \
               <span class="op">DeleteFunction</span>
               <span class="op">ListFunctions</span>
               <span class="op">Invoke</span>
+              <span class="op">UpdateFunctionConfiguration</span>
+              <span class="op">UpdateFunctionCode</span>
+              <span class="op">TagResource</span>
+              <span class="op">UntagResource</span>
+              <span class="op">ListEventSourceMappings</span>
             </div>
           </div>
           <p class="service-note">Runs functions locally using Python or Node.js runtimes. Supports timeout enforcement, realistic context objects, and environment variable injection. In CDK mode, functions are discovered from the cloud assembly. In Terraform mode, functions are created dynamically via the management API.</p>
@@ -605,6 +641,9 @@ uvx --from local-web-services lws stepfunctions start-execution \
               <span class="op">CreateRoute</span>
               <span class="op">CreateIntegration</span>
               <span class="op">CreateStage</span>
+              <span class="op">ListRoutes</span>
+              <span class="op">ListIntegrations</span>
+              <span class="op">ListStages</span>
             </div>
           </div>
           <p class="service-note">Supports both REST API (V1) and HTTP API (V2) with Lambda proxy integration. Routes requests to local Lambda functions with path parameters, query parameters, and request/response mapping. In Terraform mode, APIs and routes are created dynamically via the management API.</p>
@@ -628,7 +667,70 @@ uvx --from local-web-services lws stepfunctions start-execution \
           <div class="service-detail-header">
             <h3>IAM &amp; STS</h3>
           </div>
+          <div class="service-detail-section">
+            <h4>IAM Operations</h4>
+            <div class="service-detail-ops">
+              <span class="op">CreateRole</span>
+              <span class="op">GetRole</span>
+              <span class="op">DeleteRole</span>
+              <span class="op">CreatePolicy</span>
+              <span class="op">AttachRolePolicy</span>
+              <span class="op">PutRolePolicy</span>
+              <span class="op">ListRoles</span>
+              <span class="op">ListPolicies</span>
+            </div>
+          </div>
+          <div class="service-detail-section">
+            <h4>STS Operations</h4>
+            <div class="service-detail-ops">
+              <span class="op">GetCallerIdentity</span>
+              <span class="op">AssumeRole</span>
+            </div>
+          </div>
           <p class="service-note">Stub APIs that return AWS-compatible responses for Terraform compatibility. IAM role and policy operations are accepted and stored in memory. STS returns dummy credentials and caller identity. These stubs allow <code>terraform apply</code> to succeed without a real AWS account.</p>
+        </div>
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>SSM Parameter Store</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>API Operations</h4>
+            <div class="service-detail-ops">
+              <span class="op">PutParameter</span>
+              <span class="op">GetParameter</span>
+              <span class="op">GetParameters</span>
+              <span class="op">GetParametersByPath</span>
+              <span class="op">DeleteParameter</span>
+              <span class="op">DeleteParameters</span>
+              <span class="op">DescribeParameters</span>
+              <span class="op">AddTagsToResource</span>
+              <span class="op">RemoveTagsFromResource</span>
+              <span class="op">ListTagsForResource</span>
+            </div>
+          </div>
+          <p class="service-note">In-memory parameter store supporting String, StringList, and SecureString types with hierarchical paths, tagging, and version tracking.</p>
+        </div>
+        <div class="service-detail">
+          <div class="service-detail-header">
+            <h3>Secrets Manager</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>API Operations</h4>
+            <div class="service-detail-ops">
+              <span class="op">CreateSecret</span>
+              <span class="op">GetSecretValue</span>
+              <span class="op">PutSecretValue</span>
+              <span class="op">UpdateSecret</span>
+              <span class="op">DeleteSecret</span>
+              <span class="op">RestoreSecret</span>
+              <span class="op">ListSecrets</span>
+              <span class="op">DescribeSecret</span>
+              <span class="op">TagResource</span>
+              <span class="op">UntagResource</span>
+              <span class="op">ListSecretVersionIds</span>
+            </div>
+          </div>
+          <p class="service-note">In-memory secret store with version tracking (AWSCURRENT/AWSPREVIOUS staging labels), soft delete/restore, and tagging support.</p>
         </div>
       </div>
     </div>
@@ -779,6 +881,35 @@ uvx --from local-web-services lws stepfunctions start-execution \
           <div class="code-block" style="margin-top: 12px;"><code>uvx --from local-web-services lws cognito-idp sign-up \
   --user-pool-name MyPool \
   --username user@example.com</code></div>
+        </div>
+
+        <div class="lws-command">
+          <h4>lws ssm</h4>
+          <p>SSM Parameter Store operations.</p>
+          <div>
+            <span class="subcmd">put-parameter</span>
+            <span class="subcmd">get-parameter</span>
+            <span class="subcmd">get-parameters-by-path</span>
+            <span class="subcmd">delete-parameter</span>
+          </div>
+          <div class="code-block" style="margin-top: 12px;"><code>uvx --from local-web-services lws ssm put-parameter \
+  --name /app/config/key \
+  --value "my-value" \
+  --type String</code></div>
+        </div>
+
+        <div class="lws-command">
+          <h4>lws secretsmanager</h4>
+          <p>Secrets Manager operations.</p>
+          <div>
+            <span class="subcmd">create-secret</span>
+            <span class="subcmd">get-secret-value</span>
+            <span class="subcmd">put-secret-value</span>
+            <span class="subcmd">list-secrets</span>
+          </div>
+          <div class="code-block" style="margin-top: 12px;"><code>uvx --from local-web-services lws secretsmanager create-secret \
+  --name MySecret \
+  --secret-string "my-secret-value"</code></div>
         </div>
 
         <div class="lws-command">
