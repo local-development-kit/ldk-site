@@ -266,7 +266,7 @@ npm install</code></div>
         <div class="gs-step">
           <h3>3. Start the local environment</h3>
           <div class="code-block"><code>uvx --from local-web-services ldk dev</code></div>
-          <p>The <code>ldk dev</code> command reads the cloud assembly and starts local providers for every resource in the stack — DynamoDB tables, SQS queues, S3 buckets, Lambda functions, and an API Gateway — all wired together.</p>
+          <p>The <code>ldk dev</code> command reads the cloud assembly and starts local providers for every resource in the stack — DynamoDB tables, SQS queues, S3 buckets, Lambda functions, API Gateway, SSM parameters, and Secrets Manager secrets — all wired together.</p>
           <p>Once started, open <strong>http://localhost:3000/_ldk/gui</strong> to access the web dashboard with real-time logs, resource explorer, and system status.</p>
         </div>
 
@@ -694,6 +694,13 @@ uvx --from local-web-services lws stepfunctions start-execution \
             <h3>SSM Parameter Store</h3>
           </div>
           <div class="service-detail-section">
+            <h4>CDK Constructs</h4>
+            <div class="service-detail-ops">
+              <span class="cdk">aws_ssm.StringParameter</span>
+            </div>
+            <p class="cdk-props"><code>Name</code>, <code>Type</code>, <code>Value</code>, <code>Description</code></p>
+          </div>
+          <div class="service-detail-section">
             <h4>API Operations</h4>
             <div class="service-detail-ops">
               <span class="op">PutParameter</span>
@@ -708,11 +715,18 @@ uvx --from local-web-services lws stepfunctions start-execution \
               <span class="op">ListTagsForResource</span>
             </div>
           </div>
-          <p class="service-note">In-memory parameter store supporting String, StringList, and SecureString types with hierarchical paths, tagging, and version tracking.</p>
+          <p class="service-note">In-memory parameter store supporting String, StringList, and SecureString types with hierarchical paths, tagging, and version tracking. In CDK mode, parameters defined in the CloudFormation template are pre-seeded on startup.</p>
         </div>
         <div class="service-detail">
           <div class="service-detail-header">
             <h3>Secrets Manager</h3>
+          </div>
+          <div class="service-detail-section">
+            <h4>CDK Constructs</h4>
+            <div class="service-detail-ops">
+              <span class="cdk">aws_secretsmanager.Secret</span>
+            </div>
+            <p class="cdk-props"><code>Name</code>, <code>Description</code>, <code>SecretString</code>, <code>GenerateSecretString</code></p>
           </div>
           <div class="service-detail-section">
             <h4>API Operations</h4>
@@ -730,7 +744,7 @@ uvx --from local-web-services lws stepfunctions start-execution \
               <span class="op">ListSecretVersionIds</span>
             </div>
           </div>
-          <p class="service-note">In-memory secret store with version tracking (AWSCURRENT/AWSPREVIOUS staging labels), soft delete/restore, and tagging support.</p>
+          <p class="service-note">In-memory secret store with version tracking (AWSCURRENT/AWSPREVIOUS staging labels), soft delete/restore, and tagging support. In CDK mode, secrets defined in the CloudFormation template are pre-seeded on startup.</p>
         </div>
       </div>
     </div>
