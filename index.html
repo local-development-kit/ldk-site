@@ -246,6 +246,7 @@ No credentials. No cost. No waiting.</p>
           <h3>Prerequisites</h3>
           <ul>
             <li><a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a></li>
+            <li><a href="https://docs.docker.com/get-docker/">Docker</a></li>
             <li>Node.js 18+</li>
             <li>AWS CDK CLI (<code>npm install -g aws-cdk</code>)</li>
           </ul>
@@ -264,14 +265,20 @@ npm install</code></div>
         </div>
 
         <div class="gs-step">
-          <h3>3. Start the local environment</h3>
+          <h3>3. Pull Lambda runtime images (one-time)</h3>
+          <div class="code-block"><code>uvx --from local-web-services ldk setup lambda</code></div>
+          <p>This pulls the official AWS Lambda base images from ECR Public, which include the AWS SDK pre-installed. You only need to do this once.</p>
+        </div>
+
+        <div class="gs-step">
+          <h3>4. Start the local environment</h3>
           <div class="code-block"><code>uvx --from local-web-services ldk dev</code></div>
           <p>The <code>ldk dev</code> command reads the cloud assembly and starts local providers for every resource in the stack — DynamoDB tables, SQS queues, S3 buckets, Lambda functions, API Gateway, SSM parameters, and Secrets Manager secrets — all wired together.</p>
           <p>Once started, open <strong>http://localhost:3000/_ldk/gui</strong> to access the web dashboard with real-time logs, resource explorer, and system status.</p>
         </div>
 
         <div class="gs-step">
-          <h3>4. Make requests</h3>
+          <h3>5. Make requests</h3>
           <div class="code-block"><code># Create an order via API Gateway
 curl -X POST http://localhost:3000/orders \
   -H "Content-Type: application/json" \
@@ -295,6 +302,7 @@ uvx --from local-web-services lws s3api list-objects-v2 --bucket order-documents
           <h3>Prerequisites</h3>
           <ul>
             <li><a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a></li>
+            <li><a href="https://docs.docker.com/get-docker/">Docker</a></li>
             <li>Node.js 18+</li>
             <li><a href="https://www.terraform.io/">Terraform</a> >= 1.0</li>
           </ul>
@@ -316,20 +324,26 @@ cd lambda/generate-receipt && npm install && cd ../..</code></div>
         </div>
 
         <div class="gs-step">
-          <h3>3. Start the local environment</h3>
+          <h3>3. Pull Lambda runtime images (one-time)</h3>
+          <div class="code-block"><code>uvx --from local-web-services ldk setup lambda</code></div>
+          <p>This pulls the official AWS Lambda base images from ECR Public, which include the AWS SDK pre-installed. You only need to do this once.</p>
+        </div>
+
+        <div class="gs-step">
+          <h3>4. Start the local environment</h3>
           <div class="code-block"><code>uvx --from local-web-services ldk dev</code></div>
           <p>The <code>ldk dev</code> command auto-detects your Terraform project, starts all AWS service providers in always-on mode, and generates a <code>_lws_override.tf</code> file that redirects Terraform's AWS provider to your local endpoints.</p>
         </div>
 
         <div class="gs-step">
-          <h3>4. Apply Terraform</h3>
+          <h3>5. Apply Terraform</h3>
           <p>In another terminal, apply your Terraform configuration against the local services:</p>
           <div class="code-block"><code>terraform apply -auto-approve</code></div>
           <p>Terraform creates all resources (DynamoDB tables, SQS queues, Lambda functions, API Gateway routes, etc.) against your local endpoints. No AWS account needed.</p>
         </div>
 
         <div class="gs-step">
-          <h3>5. Test the application</h3>
+          <h3>6. Test the application</h3>
           <div class="code-block"><code># Run the end-to-end test script
 bash test-orders.sh
 
@@ -605,7 +619,7 @@ uvx --from local-web-services lws stepfunctions start-execution \
               <span class="op">ListEventSourceMappings</span>
             </div>
           </div>
-          <p class="service-note">Runs functions locally using Python or Node.js runtimes. Supports timeout enforcement, realistic context objects, and environment variable injection. In CDK mode, functions are discovered from the cloud assembly. In Terraform mode, functions are created dynamically via the management API.</p>
+          <p class="service-note">Runs functions inside official AWS Lambda Docker images (with AWS SDK pre-installed). Run <code>ldk setup lambda</code> once to pull the images. Supports timeout enforcement, realistic context objects, and environment variable injection. In CDK mode, functions are discovered from the cloud assembly. In Terraform mode, functions are created dynamically via the management API.</p>
         </div>
         <div class="service-detail">
           <div class="service-detail-header">
@@ -793,6 +807,21 @@ uvx --from local-web-services lws stepfunctions start-execution \
           <li><code>--project-dir, -d</code> <span>Project root directory (default: current directory)</span></li>
           <li><code>--port, -p</code> <span>Management API port to notify running ldk dev</span></li>
         </ul>
+      </div>
+
+      <div class="cli-detail">
+        <div class="code-block"><code>uvx --from local-web-services ldk setup SERVICE [OPTIONS]</code></div>
+        <h3>ldk setup</h3>
+        <p>Pull Docker images required for local service emulation. Currently supports <code>lambda</code> which pulls official AWS Lambda base images from ECR Public (includes AWS SDK pre-installed).</p>
+        <ul class="option-list">
+          <li><code>SERVICE</code> <span>Service to set up (currently: <code>lambda</code>)</span></li>
+          <li><code>--runtime, -r</code> <span>Pull only a specific runtime (e.g. <code>python3.12</code>, <code>nodejs20.x</code>)</span></li>
+        </ul>
+        <div class="code-block" style="margin-top: 12px;"><code># Pull all Lambda runtime images
+uvx --from local-web-services ldk setup lambda
+
+# Pull a specific runtime only
+uvx --from local-web-services ldk setup lambda --runtime python3.12</code></div>
       </div>
 
       <h3 style="font-size: 2rem; margin: 80px 0 32px; color: var(--color-primary);">LWS Commands</h3>
