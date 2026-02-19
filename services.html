@@ -146,7 +146,7 @@
             <div class="service-detail-ops">
               <span class="cdk">aws_s3.Bucket</span>
             </div>
-            <p class="cdk-props"><code>bucketName</code></p>
+            <p class="cdk-props"><code>bucketName</code>, <code>websiteIndexDocument</code>, <code>websiteErrorDocument</code></p>
           </div>
           <div class="service-detail-section">
             <h4>API Operations</h4>
@@ -175,9 +175,12 @@
               <span class="op">CompleteMultipartUpload</span>
               <span class="op">AbortMultipartUpload</span>
               <span class="op">ListParts</span>
+              <span class="op">PutBucketWebsite</span>
+              <span class="op">GetBucketWebsite</span>
+              <span class="op">DeleteBucketWebsite</span>
             </div>
           </div>
-          <p class="service-note">Backed by the local filesystem. Supports event notifications (ObjectCreated, ObjectRemoved), multipart uploads, presigned URL generation, ETags, binary content, and content-type headers.</p>
+          <p class="service-note">Backed by the local filesystem. Supports event notifications (ObjectCreated, ObjectRemoved), multipart uploads, presigned URL generation, ETags, binary content, content-type headers, and <strong>static website hosting</strong> with index document resolution and error document serving.</p>
         </div>
 
         <div class="service-detail" id="sns">
